@@ -34,7 +34,7 @@ namespace dotNetWPF_03_9500_3292
 					queue.Enqueue(printer);
 				}
 			}
-
+			
 
 			currentPrinter = queue.Dequeue();
 			this.currentPrinter.PageMissing += PageMiss;
@@ -49,14 +49,22 @@ namespace dotNetWPF_03_9500_3292
 		{
 			PrinterEventArgs p = e as PrinterEventArgs;
 
-			MessageBox.Show(p.Date_Time.ToString() + p.CriticalWarning.ToString(), p.Error_Warning_Message.ToString());
-
+			MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: Missing " + this.currentPrinter.CurrentAmountOfPageToPrint + " pages"  , p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+			this.currentPrinter.AddPages();
+			
 		}
 		public void InkEmpt(object sender, EventArgs e)
 		{
 			PrinterEventArgs p = e as PrinterEventArgs;
+			if (p.CriticalWarning)
+			{
+				MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: your ink is only " + this.currentPrinter.InkCount + " %", p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			if (!p.CriticalWarning)
+			{
+				MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: your ink is only " + this.currentPrinter.InkCount + " %",p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Exclamation);
 
-			MessageBox.Show(p.Date_Time.ToString() + p.CriticalWarning.ToString(), p.Error_Warning_Message.ToString());
+			}
 
 		}
 		private void printButton_Click(object sender, RoutedEventArgs e)

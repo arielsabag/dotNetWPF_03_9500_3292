@@ -22,10 +22,10 @@
                 <RowDefinition Height="auto"/>
             </Grid.RowDefinitions>
             <Label x:Name="inkLabel" Content="Ink:"/>
-            <Label x:Name="pageLabel" Content="pages:" Grid.Row="1" />
+            <Label x:Name="pageLabel" Content="pages:" Grid.Row="1"  />
             <ProgressBar Name="inkCountProgressBar" Grid.Column="1"    ToolTip="Not shown"  ToolTipOpening="ProgressBar_ToolTipOpening" Value="{Binding InkCount}" />
 
-            <Slider x:Name="pageCountSlider" Grid.Column="1" Grid.Row="1" Maximum="400"    ToolTip="Not shown"  ToolTipOpening="Slider_ToolTipOpening" 			Value="{Binding  Path=InkCount, UpdateSourceTrigger=Explicit , Mode=TwoWay}"   />
+            <Slider x:Name="pageCountSlider" Grid.Column="1" Grid.Row="1" Maximum="400"  Value="{Binding  Path=InkCount, UpdateSourceTrigger=Explicit , Mode=TwoWay}"   />
         </Grid>
         <Image Grid.Row="0" Source="image/printer.jpg" />
 
