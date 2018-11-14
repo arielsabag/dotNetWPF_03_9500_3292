@@ -12,7 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-//using System.Collections;
+
 namespace dotNetWPF_03_9500_3292
 {
 	/// <summary>
@@ -20,8 +20,9 @@ namespace dotNetWPF_03_9500_3292
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+
 		PrinterUserControl currentPrinter;
-		Queue<PrinterUserControl> queue;
+		Queue<PrinterUserControl> queue; // queue of printers
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -31,58 +32,72 @@ namespace dotNetWPF_03_9500_3292
 				if (item is PrinterUserControl)
 				{
 					PrinterUserControl printer = item as PrinterUserControl;
-					printer.PageMissing += PageMiss;
-					printer.InkEmpty += InkEmpt;
-				
-					queue.Enqueue(printer);
+					printer.PageMissing += PageMiss; // add event pageMissing
+					printer.InkEmpty += InkEmpt; // add event inkEmpty
+					queue.Enqueue(printer); // push to queue
 				}
 			}
-			
 
-			currentPrinter = queue.Dequeue();
-			//this.currentPrinter.PageMissing += PageMiss;
-			//this.currentPrinter.InkEmpty += InkEmpt;
-
-			this.printButton.MouseEnter += Button_MouseEnter;
-			this.printButton.MouseLeave += Button_MouseLeave;
+			currentPrinter = queue.Dequeue(); // take one printer
+			this.printButton.MouseEnter += Button_MouseEnter; // add event
+			this.printButton.MouseLeave += Button_MouseLeave; // add event
 		}
-
-
+		/// <summary>
+		/// event pageMiss
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		public void PageMiss(object sender, EventArgs e)
 		{
 			PrinterEventArgs p = e as PrinterEventArgs;
-
+			// show warnning
 			MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: Missing " + this.currentPrinter.CurrentAmountOfPageToPrint + " pages"  , p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
-			this.currentPrinter.AddPages();
-			currentPrinter.pageLabel.Foreground = System.Windows.Media.Brushes.Black;
-			queue.Enqueue(currentPrinter);
-			currentPrinter = queue.Dequeue();
-			
+			this.currentPrinter.AddPages(); // add pages
+			currentPrinter.pageLabel.Foreground = System.Windows.Media.Brushes.Black; // paint in black again
+			queue.Enqueue(currentPrinter); // push to queue
+			currentPrinter = queue.Dequeue();// take the next printer from queue
 		}
+		/// <summary>
+		/// event inkEmpt
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		public void InkEmpt(object sender, EventArgs e)
 		{
 			PrinterEventArgs p = e as PrinterEventArgs;
+			// if ink over or under 1%
 			if (p.CriticalWarning)
 			{
+				// show warnning
 				MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: your ink is only " + this.currentPrinter.InkCount + " %", p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
-				this.currentPrinter.AddInk();
-				currentPrinter.inkLabel.Foreground = System.Windows.Media.Brushes.Black;
-				queue.Enqueue(currentPrinter);
-				currentPrinter = queue.Dequeue();
+				this.currentPrinter.AddInk(); // add ink
+				currentPrinter.inkLabel.Foreground = System.Windows.Media.Brushes.Black; // paint in black again
+				queue.Enqueue(currentPrinter);// push to queue
+				currentPrinter = queue.Dequeue();// take the next printer from queue
 			}
+			// if amount is low
 			if (!p.CriticalWarning)
 			{
+				// show warnning
 				MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: your ink is only " + this.currentPrinter.InkCount + " %",p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Exclamation);
-
 			}
-
 		}
+		/// <summary>
+		/// event button click
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void printButton_Click(object sender, RoutedEventArgs e)
 		{
-
 			this.currentPrinter.Print();
 			MessageBox.Show("clicked");
 		}
+
+		/// <summary>
+		/// mouse over event
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void Button_MouseEnter(object sender, MouseEventArgs e)
 		{
 			Button b = sender as Button;
@@ -91,6 +106,11 @@ namespace dotNetWPF_03_9500_3292
 				b.FontSize += 10;
 			}
 		}
+		/// <summary>
+		/// mouse leave vevent
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void Button_MouseLeave(object sender, MouseEventArgs e)
 		{
 			Button b = sender as Button;

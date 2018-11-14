@@ -22,40 +22,39 @@ namespace dotNetWPF_03_9500_3292
 	public partial class PrinterUserControl : UserControl
 	{
 
-
 		public PrinterUserControl()
 		{
-
 			InitializeComponent();
-
-			PrinterName = "Printer " + code++;
-
-			//printer , printer 2 ...
-			//pageCountSlider.Value = 50;
-			AddInk();
-			AddPages();
-			DataContext = this;
-			//Grid.DataContext = this;
+			PrinterName = "Printer " + code++;  // sets the names  printer1 , printer 2 ...
+			AddInk(); // ad ink to current printer
+			AddPages(); // add pages to current printer
+			DataContext = this;  
 		}
+
 		PrinterEventArgs p;
 
 		public delegate void EventHandler<PrinterEventArgs>(object sender, PrinterEventArgs e);
 		public event EventHandler PageMissing;  // page missing  event
 		public event EventHandler InkEmpty;  // ink empty event
-		static Random r = new Random();      
-		static int code = 1; // for each printer name
 
+		static Random r = new Random(); // to randomly add or substract ink ad pages from current printer
+		static int code = 1; // for each printer name
 		/// <summary>
 		/// constants values
 		/// </summary>
-		const double MAX_INK = 100;  
-		const double MIN_ADD_INK = MAX_INK / 10;
-		const double MAX_PRINT_INK = 70;
-		const int MAX_PAGES = 400;
-		const int MIN_ADD_PAGES = MAX_PAGES / 10;
-		const int MAX_PRINT_PAGES = 300;
-		// end of constants values
+		const double MAX_INK = 100;  // the max amount of ink
+		const double MIN_ADD_INK = MAX_INK / 10; // the min amount to add to ink
+		const double MAX_PRINT_INK = 70;  // max amount of ink to add toprinter
+		const int MAX_PAGES = 400;  // the max amount of pages in printer
+		const int MIN_ADD_PAGES = MAX_PAGES / 10;  // the min amount of pages to add to printer
+		const int MAX_PRINT_PAGES = 300;  // max amount of pages to add to printer
+										  // end of constants values
 
+
+		public double MaxPages
+		{
+			get { return MAX_PAGES; }
+		}
 
 
 		/// <summary>
@@ -67,37 +66,38 @@ namespace dotNetWPF_03_9500_3292
 		/// reveling the ink amount
 		/// </summary>
 		private double inkCount;
-
 		public double InkCount
 		{
 			get { return inkCount; }
 			set { inkCount = value; }
 		}
 
-		private int pageCount;
 		/// <summary>
 		/// reveling the page amount
 		/// </summary>
+		private int pageCount;
 		public int PageCount
 		{
         	get { return pageCount; }
 			set{pageCount = value;}
 		}
+		/// <summary>
+		///  the current random number of page to substract from current printer
+		/// </summary>
 		private int currentAmountOfPageToPrint;
-
 		public int CurrentAmountOfPageToPrint
 		{
 			get { return currentAmountOfPageToPrint; }
 			set { currentAmountOfPageToPrint = value; }
 		}
-		
+
 		/// <summary>
 		/// illustrate printing - decrease page count by ranndom number
 		/// </summary>
 		public void Print()
 		{
 			InkCount -= r.Next((int)(MAX_INK - InkCount)); //decrease ink amount randomly 
-			CurrentAmountOfPageToPrint = r.Next(MAX_PAGES - pageCount);
+			CurrentAmountOfPageToPrint = r.Next(MAX_PAGES - pageCount);         //  the current random number of page to substract from current printer
 			PageCount -= CurrentAmountOfPageToPrint;    //decrease page amount randomly 
 
 			pageCountSlider.Value = PageCount; // update pageCountSlider to new amount of pages
@@ -105,30 +105,27 @@ namespace dotNetWPF_03_9500_3292
 
 			if (PageCount <= 0) // if page over -> event
 			{
-				PageCount = 0;
-				pageLabel.Foreground = System.Windows.Media.Brushes.Red;
-				PageMissing(this, new PrinterEventArgs(PrinterName, "  Page Missing !!!", true));
+				PageCount = 0; //cant be under 0
+				pageLabel.Foreground = System.Windows.Media.Brushes.Red; // paint in red -> critical warnning
+				PageMissing(this, new PrinterEventArgs(PrinterName, "  Page Missing !!!", true)); // send an event
 			}
-			if ((InkCount <= 15)&&(InkCount>=10))  // if ink over -> event
+			if ((InkCount <= 15)&&(InkCount>=10))  // if ink amount is low -> event
 			{
-				inkLabel.Foreground = System.Windows.Media.Brushes.Yellow;
-				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", false));
+				inkLabel.Foreground = System.Windows.Media.Brushes.Yellow; // paint in yellow -> not critical warnning
+				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", false)); // send an event
 			}
-			if ((InkCount <= 10) && (InkCount >= 1))  // if ink over -> event
+			if ((InkCount <= 10) && (InkCount >= 1))  // if ink is lower -> event
 			{
-				inkLabel.Foreground = System.Windows.Media.Brushes.Orange;
-				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", false));
+				inkLabel.Foreground = System.Windows.Media.Brushes.Orange; // paint in orange -> not critical warnning
+				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", false));  // send an event
 			}
-			if (InkCount < 1)  // if ink over -> event
+			if (InkCount < 1)  // if ink over or under 1% -> event
 			{
-				InkCount = 0;
-				inkLabel.Foreground = System.Windows.Media.Brushes.Red;
-				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", true));
+				InkCount = 0; // cant be under 0
+				inkLabel.Foreground = System.Windows.Media.Brushes.Red; // paint in red -> critical warnning
+				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", true)); // send an event
 			}
 		}
-
-
-
 
 		/// <summary>
 		/// randomly add pages to pagesCount
@@ -141,13 +138,13 @@ namespace dotNetWPF_03_9500_3292
 		/// <summary>
 		/// randomly add ink to InkCount
 		/// </summary>
+		/// 
 		public void AddInk()
 		{
 			InkCount += r.Next((int)(MAX_INK - InkCount));
 		}
 
-
-        //-------------- E V E N T S---------------------//
+        //--------------------------------------------- E V E N T S ------------------------------------------//
 		/// <summary>
 		/// increase font size of current printer name
 		/// </summary>
@@ -161,6 +158,7 @@ namespace dotNetWPF_03_9500_3292
 				l.FontSize += 8; // increase font size of printer name
 			}
 		}
+
 		/// <summary>
 		/// decrease font size of current printer name
 		/// </summary>
@@ -174,6 +172,7 @@ namespace dotNetWPF_03_9500_3292
 				l.FontSize -= 8;
 			}
 		}
+
 		/// <summary>
 		/// shows ink amount when mouse is over ProgressBar
 		/// </summary>
@@ -184,6 +183,6 @@ namespace dotNetWPF_03_9500_3292
 			ProgressBar b = sender as ProgressBar;
 			b.ToolTip = InkCount;
 		}
-	
+		// ------------------------------------------------ end of E V E N T S ----------------------------------//
 	}
 }
