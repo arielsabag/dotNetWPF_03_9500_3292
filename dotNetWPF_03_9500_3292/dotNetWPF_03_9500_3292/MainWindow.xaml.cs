@@ -31,14 +31,17 @@ namespace dotNetWPF_03_9500_3292
 				if (item is PrinterUserControl)
 				{
 					PrinterUserControl printer = item as PrinterUserControl;
+					printer.PageMissing += PageMiss;
+					printer.InkEmpty += InkEmpt;
+				
 					queue.Enqueue(printer);
 				}
 			}
 			
 
 			currentPrinter = queue.Dequeue();
-			this.currentPrinter.PageMissing += PageMiss;
-			this.currentPrinter.InkEmpty += InkEmpt;
+			//this.currentPrinter.PageMissing += PageMiss;
+			//this.currentPrinter.InkEmpty += InkEmpt;
 
 			this.printButton.MouseEnter += Button_MouseEnter;
 			this.printButton.MouseLeave += Button_MouseLeave;
@@ -51,6 +54,9 @@ namespace dotNetWPF_03_9500_3292
 
 			MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: Missing " + this.currentPrinter.CurrentAmountOfPageToPrint + " pages"  , p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
 			this.currentPrinter.AddPages();
+			currentPrinter.pageLabel.Foreground = System.Windows.Media.Brushes.Black;
+			queue.Enqueue(currentPrinter);
+			currentPrinter = queue.Dequeue();
 			
 		}
 		public void InkEmpt(object sender, EventArgs e)
@@ -59,6 +65,10 @@ namespace dotNetWPF_03_9500_3292
 			if (p.CriticalWarning)
 			{
 				MessageBox.Show("at: " + p.Date_Time.ToString() + "\nMessage from pointer: your ink is only " + this.currentPrinter.InkCount + " %", p.PrinterName + p.Error_Warning_Message.ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
+				this.currentPrinter.AddInk();
+				currentPrinter.inkLabel.Foreground = System.Windows.Media.Brushes.Black;
+				queue.Enqueue(currentPrinter);
+				currentPrinter = queue.Dequeue();
 			}
 			if (!p.CriticalWarning)
 			{

@@ -106,23 +106,23 @@ namespace dotNetWPF_03_9500_3292
 			if (PageCount <= 0) // if page over -> event
 			{
 				PageCount = 0;
-				this.pageLabel.Foreground = System.Windows.Media.Brushes.Red;
+				pageLabel.Foreground = System.Windows.Media.Brushes.Red;
 				PageMissing(this, new PrinterEventArgs(PrinterName, "  Page Missing !!!", true));
 			}
 			if ((InkCount <= 15)&&(InkCount>=10))  // if ink over -> event
 			{
-				this.inkLabel.Foreground = System.Windows.Media.Brushes.Yellow;
+				inkLabel.Foreground = System.Windows.Media.Brushes.Yellow;
 				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", false));
 			}
 			if ((InkCount <= 10) && (InkCount >= 1))  // if ink over -> event
 			{
-				this.inkLabel.Foreground = System.Windows.Media.Brushes.Orange;
+				inkLabel.Foreground = System.Windows.Media.Brushes.Orange;
 				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", false));
 			}
 			if (InkCount < 1)  // if ink over -> event
 			{
 				InkCount = 0;
-				this.inkLabel.Foreground = System.Windows.Media.Brushes.Red;
+				inkLabel.Foreground = System.Windows.Media.Brushes.Red;
 				InkEmpty(this, new PrinterEventArgs(PrinterName, " Ink Empty", true));
 			}
 		}
