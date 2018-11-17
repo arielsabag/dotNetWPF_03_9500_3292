@@ -51,7 +51,7 @@ namespace dotNetWPF_03_9500_3292
 										  // end of constants values
 
 
-		public double MaxPages
+		static public double MaxPages
 		{
 			get { return MAX_PAGES; }
 		}

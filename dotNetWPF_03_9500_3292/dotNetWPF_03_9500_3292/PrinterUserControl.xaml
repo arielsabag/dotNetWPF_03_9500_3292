@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="dotNetWPF_03_9500_3292.PrinterUserControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+﻿<UserControl x:Name="userControl" x:Class="dotNetWPF_03_9500_3292.PrinterUserControl"    
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"  
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"           
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:dotNetWPF_03_9500_3292"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"  BorderThickness="1" BorderBrush="Black">
+             mc:Ignorable="d"        
+             d:DesignHeight="300"   d:DesignWidth="300"   BorderBrush="Black" BorderThickness="1">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -20,13 +20,13 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>  
             </Grid.RowDefinitions>
             <Label x:Name="inkLabel" Content="Ink:"/>
             <Label x:Name="pageLabel" Content="pages:" Grid.Row="1"  />
             <ProgressBar Name="inkCountProgressBar" Grid.Column="1"    ToolTip="Not shown"  ToolTipOpening="ProgressBar_ToolTipOpening" Value="{Binding InkCount}" />
 
-            <Slider x:Name="pageCountSlider" Grid.Column="1" Grid.Row="1" Maximum="400"  Value="{Binding  Path=InkCount, UpdateSourceTrigger=Explicit , Mode=TwoWay}"   />
+            <Slider x:Name="pageCountSlider" Grid.Column="1" Grid.Row="1"  Maximum="{x:Static local:PrinterUserControl.MaxPages}"  Value="{Binding  Path=InkCount, UpdateSourceTrigger=Explicit , Mode=TwoWay}"></Slider>
         </Grid>
         <Image Grid.Row="0" Source="image/printer.jpg" />
 
